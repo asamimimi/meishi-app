@@ -1,11 +1,14 @@
-
+import { Button, HStack } from "@chakra-ui/react"
 import './App.css'
 
 function App() {
 
   return (
     <>
-      <h1>テストコンポーネント</h1>
+      <HStack>
+        <Button>Click me</Button>
+        <Button>Click me</Button>
+      </HStack>
     </>
   )
 }
