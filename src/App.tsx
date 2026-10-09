@@ -12,11 +12,11 @@ function App() {
     <>
       <Link to="/">home</Link>
       <Link to="/card">カードへ</Link>
-
+      <Link to="/register">新規登録はこちら</Link>
 
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='/card' element={<Cards />} />
+        <Route path='/card/:userId' element={<Cards />} />
         <Route path='/register' element={<Register />} />
       </Routes>
 

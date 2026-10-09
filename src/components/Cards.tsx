@@ -3,7 +3,7 @@ import { FaGithub } from "react-icons/fa";
 import { LuNotebookText } from "react-icons/lu";
 import { FaXTwitter } from "react-icons/fa6";
 import { useState, useEffect, } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 
 
@@ -34,10 +34,13 @@ type Skills = {
 function Cards() {
     const [profile, setProfile] = useState<Profile[]>([])
     const [skill, setSkill] = useState<Skills[]>([])
+    const [item, setItem] = useState<string>('')
+    const { userId } = useParams();
 
     useEffect(() => {
         async function fetchRecords() {
-            const { data, error } = await supabase.from('users').select()
+            const { data, error } = await supabase.from('users').select().eq('user_id', userId.trim())
+                .maybeSingle();
             if (error) {
                 console.error(error)
                 return
@@ -49,6 +52,7 @@ function Cards() {
         }
         fetchRecords()
     }, [])
+
 
 
     useEffect(() => {
@@ -63,64 +67,62 @@ function Cards() {
                     name
                     )`
                 )
+                .eq('user_id', userId.trim())
+                .maybeSingle();
             if (error) {
                 console.error(error)
                 return
             }
             if (data) {
                 setSkill(data as unknown as Skills[])
+                setItem(data.skills)
                 console.log(data)
             }
         }
         fetchSkills()
     }, [])
 
-
-
+    const sanitizedHTML = DOMPurify.sanitize(profile.description);
     return (
         <>
-            {profile.map((user) => {
-                const sanitizedHTML = DOMPurify.sanitize(user.description);
-                const userSkills = skill.filter((s) => s.user_id === user.user_id);
-                return (
-                    <Container key={user.user_id}>
-                        <Center>
-                            <Card.Root width="320px" >
-                                <Card.Body gap="2">
-                                    <Card.Title mt="2">{user.name}</Card.Title>
-                                    <Heading size="lg">自己紹介</Heading>
 
-                                    <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
 
-                                    <Heading size="lg">好きな技術</Heading>
-                                    <Card.Description>
-                                        好きなスキル {userSkills.map((s) => (s.skills as unknown as { name: string })?.name).join(', ')}
-                                    </Card.Description>
-                                </Card.Body>
-                                <Card.Footer justifyContent="flex-end">
-                                    <Link to={`https://github.com/${user.github_id}`} target="_brank">
-                                        <IconButton aria-label="Search database">
-                                            <FaGithub />
-                                        </IconButton>
-                                    </Link>
-                                    <Link to={`https://qiita.com/${user.qiita_id}`} target="_brank">
-                                        <IconButton aria-label="Search database">
-                                            <LuNotebookText />
-                                        </IconButton>
-                                    </Link>
-                                    <Link to={`https://x.com/${user.x_id}`} target="_brank">
-                                        <IconButton>
-                                            <FaXTwitter />
-                                        </IconButton>
-                                    </Link>
-                                </Card.Footer>
-                            </Card.Root>
-                        </Center>
-                    </Container>
-                )
 
-            })
-            }
+            <Container key={profile.user_id}>
+                <Center>
+                    <Card.Root width="320px" >
+                        <Card.Body gap="2">
+                            <Card.Title mt="2">{profile.name}</Card.Title>
+                            <Heading size="lg">自己紹介</Heading>
+
+                            <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
+
+                            <Heading size="lg">好きな技術</Heading>
+                            <Card.Description>
+                                好きなスキル {item.name}
+                            </Card.Description>
+                        </Card.Body>
+                        <Card.Footer justifyContent="flex-end">
+                            <Link to={`https://github.com/${profile.github_id}`} target="_brank">
+                                <IconButton aria-label="Search database">
+                                    <FaGithub />
+                                </IconButton>
+                            </Link>
+                            <Link to={`https://qiita.com/${profile.qiita_id}`} target="_brank">
+                                <IconButton aria-label="Search database">
+                                    <LuNotebookText />
+                                </IconButton>
+                            </Link>
+                            <Link to={`https://x.com/${profile.x_id}`} target="_brank">
+                                <IconButton>
+                                    <FaXTwitter />
+                                </IconButton>
+                            </Link>
+                        </Card.Footer>
+                    </Card.Root>
+                </Center>
+            </Container>
+
 
         </>
     )
