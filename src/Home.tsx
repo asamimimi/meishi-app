@@ -69,10 +69,8 @@ function Home() {
 
                 </Center>
                 <Center>
-                    <Link href="/card/register" className="link_text">新規登録はこちら</Link>
+                    <Link href="/register" className="link_text">新規登録はこちら</Link>
                 </Center>
-
-
             </Container >
 
 
