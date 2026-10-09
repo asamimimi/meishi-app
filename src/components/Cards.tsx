@@ -1,9 +1,9 @@
-import { Container, Center, Heading, Card, IconButton, Text } from "@chakra-ui/react"
+import { Container, Center, Heading, Card, IconButton } from "@chakra-ui/react"
 import { FaGithub } from "react-icons/fa";
 import { LuNotebookText } from "react-icons/lu";
 import { FaXTwitter } from "react-icons/fa6";
-import { useState, useEffect, use } from 'react';
-import { Link } from 'react-router';
+import { useState, useEffect, } from 'react';
+import { Link } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 
 
