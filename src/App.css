@@ -1,0 +1,17 @@
+body {
+  background-color: rgb(255, 252, 248);
+}
+
+
+.title {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.login_btn {
+  width: 100%;
+}
+
+a.chakra-link.link_text {
+  margin-top: 24px;
+}
