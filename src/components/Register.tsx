@@ -13,12 +13,28 @@ type Select = {
     id: number,
     name: string,
 }
-
+type FormData = {
+    user_id: string,
+    name: string,
+    description: string,
+    github_id: string,
+    qiita_id: string,
+    x_id: string,
+    skill_id: number
+}
 
 function Register() {
 
     const [selection, setSelection] = useState<Select[]>([])
-
+    const [formData, setFormData] = useState<FormData>({
+        user_id: '',
+        name: '',
+        description: '',
+        github_id: '',
+        qiita_id: '',
+        x_id: '',
+        skill_id: 0,
+    });
 
 
     // スキルのデータ取得
@@ -38,36 +54,21 @@ function Register() {
     }, [])
 
 
-    // データ登録
-    const [user_id, setUser_id] = useState('');
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
-    const [github_id, setGithub_id] = useState('');
-    const [qiita_id, setQiita_id] = useState('');
-    const [x_id, setX_id] = useState('');
-    const [skill_id, setSkill] = useState(0);
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUser_id(e.target.value);
-    };
-    const handleChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setName(e.target.value);
-    };
-    const handleChangeDescription = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setDescription(e.target.value);
-    };
-    const handleChangeGithub = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setGithub_id(e.target.value);
-    };
-    const handleChangeQiita = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setQiita_id(e.target.value);
-    };
-    const handleChangeX = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setX_id(e.target.value);
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        const fieldName = name as keyof FormData;
+
+        setFormData(prev => ({
+            ...prev,
+            [fieldName]: fieldName === 'skill_id' ? Number(value) : value,
+        }));
     };
 
     const handleSubmit = async (e: React.SubmitEvent) => {
         e.preventDefault();
+        const { user_id, name, description, github_id, qiita_id, x_id, skill_id } = formData;
+
         // Supabase の `insert` を使ってデータを追加
         // 1. 親（users）を先に登録
         const { error: userError } = await supabase
@@ -92,12 +93,6 @@ function Register() {
     };
 
 
-
-
-
-
-
-
     return (
         <>
             <Center>
@@ -117,20 +112,19 @@ function Register() {
                                     <Field.Root required>
                                         <Field.Label>ID(好きな英単語)<Field.RequiredIndicator />
                                         </Field.Label>
-                                        <Input name="user_id" value={user_id}
+                                        <Input name="user_id" value={formData.user_id}
                                             onChange={handleChange} />
                                     </Field.Root>
 
                                     <Field.Root required>
                                         <Field.Label>お名前<Field.RequiredIndicator /></Field.Label>
-                                        <Input placeholder="山田　太郎" name="name" type="name" value={name}
-                                            onChange={handleChangeName} />
+                                        <Input placeholder="山田　太郎" name="name" type="name" value={formData.name} onChange={handleChange} />
                                     </Field.Root>
 
                                     <Field.Root required>
                                         <Field.Label>自己紹介<Field.RequiredIndicator /></Field.Label>
-                                        <Textarea placeholder="HTMLも利用できます。" name="description" value={description}
-                                            onChange={handleChangeDescription} />
+                                        <Textarea placeholder="HTMLも利用できます。" name="description" value={formData.description}
+                                            onChange={handleChange} />
                                     </Field.Root>
 
                                     <Field.Root required>
@@ -138,8 +132,8 @@ function Register() {
                                         </Field.Label>
                                         <NativeSelect.Root>
                                             <NativeSelect.Field name="skill"
-                                                value={skill_id}
-                                                onChange={(e) => setSkill(Number(e.currentTarget.value))}
+                                                value={formData.skill_id}
+                                                onChange={handleChange}
                                                 placeholder="選択してください">
                                                 {selection.map((item) => {
                                                     return (
@@ -154,20 +148,20 @@ function Register() {
 
                                     <Field.Root required>
                                         <Field.Label>GitHub ID<Field.RequiredIndicator /></Field.Label>
-                                        <Input placeholder="IDを入力してください" name="github_id" value={github_id}
-                                            onChange={handleChangeGithub} />
+                                        <Input placeholder="IDを入力してください" name="github_id" value={formData.github_id}
+                                            onChange={handleChange} />
                                     </Field.Root>
 
                                     <Field.Root required>
                                         <Field.Label>Qiita ID<Field.RequiredIndicator /></Field.Label>
-                                        <Input placeholder="IDを入力してください" name="qiita_id" value={qiita_id}
-                                            onChange={handleChangeQiita} />
+                                        <Input placeholder="IDを入力してください" name="qiita_id" value={formData.qiita_id}
+                                            onChange={handleChange} />
                                     </Field.Root>
 
                                     <Field.Root required>
                                         <Field.Label>X ID<Field.RequiredIndicator /></Field.Label>
-                                        <Input placeholder="@なしでIDを入力してください" name="x_id" value={x_id}
-                                            onChange={handleChangeX} />
+                                        <Input placeholder="@なしでIDを入力してください" name="x_id" value={formData.x_id}
+                                            onChange={handleChange} />
                                     </Field.Root>
                                 </Stack>
                             </Card.Body>
