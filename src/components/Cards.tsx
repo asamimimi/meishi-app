@@ -1,9 +1,9 @@
-import { Container, Center, Heading, Card, IconButton } from "@chakra-ui/react"
+import { Container, Center, Heading, Card, IconButton, Button } from "@chakra-ui/react"
 import { FaGithub } from "react-icons/fa";
 import { LuNotebookText } from "react-icons/lu";
 import { FaXTwitter } from "react-icons/fa6";
 import { useState, useEffect, } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import DOMPurify from 'dompurify';
 
 
@@ -36,6 +36,8 @@ function Cards() {
     const [skill, setSkill] = useState<Skills[]>([])
     const [item, setItem] = useState<string>('')
     const { userId } = useParams();
+    const navigate = useNavigate();
+
 
     useEffect(() => {
         async function fetchRecords() {
@@ -83,12 +85,15 @@ function Cards() {
     }, [])
 
     const sanitizedHTML = DOMPurify.sanitize(profile.description);
+
+    const toBack = (() => {
+        navigate(`/`);
+    })
+
     return (
         <>
 
-
-
-            <Container key={profile.user_id}>
+            <Container key={profile.user_id} pt="10">
                 <Center>
                     <Card.Root width="320px" >
                         <Card.Body gap="2">
@@ -120,6 +125,9 @@ function Cards() {
                             </Link>
                         </Card.Footer>
                     </Card.Root>
+                </Center>
+                <Center mt="8">
+                    <Button onClick={toBack} width="300px" bg="teal.500">戻る</Button>
                 </Center>
             </Container>
 

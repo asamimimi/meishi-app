@@ -10,9 +10,6 @@ function App() {
 
   return (
     <>
-      <Link to="/">home</Link>
-      <Link to="/card">カードへ</Link>
-      <Link to="/register">新規登録はこちら</Link>
 
       <Routes>
         <Route path='/' element={<Home />} />

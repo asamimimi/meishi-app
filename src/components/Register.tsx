@@ -1,6 +1,8 @@
 import { Container, Center, Heading, Card, Button, Stack, Field, Input, Textarea, NativeSelect } from "@chakra-ui/react"
 import { useState, useEffect } from 'react';
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { useNavigate } from 'react-router-dom';
+
 
 // supabase
 import { createClient } from '@supabase/supabase-js';
@@ -27,6 +29,7 @@ type FormData = {
 function Register() {
 
     const [selection, setSelection] = useState<Select[]>([])
+    const navigate = useNavigate();
 
     // スキルのデータ取得
     useEffect(() => {
@@ -86,14 +89,16 @@ function Register() {
         console.log('送信された値:', formData);
     };
 
-
+    const toBack = (() => {
+        navigate(`/`);
+    })
     return (
-        <>
+        <>  <Container pt="6" pb="6">
             <Center>
                 <Heading size="2xl" className="title">新規名刺登録</Heading>
             </Center>
 
-            <Container >
+            <Container>
                 <Center>
                     <Card.Root width="350px">
                         <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -187,13 +192,16 @@ function Register() {
                             </Card.Body>
 
                             <Card.Footer justifyContent="center">
-                                <Button variant="solid" type="submit" loading={isSubmitting}>登録する</Button>
+                                <Button variant="solid" type="submit" loading={isSubmitting} width="280px">登録する</Button>
                             </Card.Footer>
                         </form>
                     </Card.Root>
                 </Center>
+                <Center mt="8">
+                    <Button onClick={toBack} width="300px" bg="teal.500">戻る</Button>
+                </Center>
             </Container >
-
+        </Container >
         </>
     )
 }

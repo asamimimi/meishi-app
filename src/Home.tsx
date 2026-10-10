@@ -44,7 +44,7 @@ function Home() {
 
     return (
         <>
-            <Container>
+            <Container pt="6" pb="6">
                 <Center>
                     <Heading fontWeight="bold" className="title">デジタル名刺アプリ</Heading>
                 </Center>
