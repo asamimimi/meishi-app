@@ -5,6 +5,8 @@ import { FaXTwitter } from "react-icons/fa6";
 import { useState, useEffect, } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import DOMPurify from 'dompurify';
+import { CircularProgress } from 'react-loader-spinner'
+
 
 
 // supabase
@@ -37,10 +39,12 @@ function Cards() {
     const [item, setItem] = useState<string>('')
     const { userId } = useParams();
     const navigate = useNavigate();
-
+    // ローデイング管理
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         async function fetchRecords() {
+            setIsLoading(true);
             const { data, error } = await supabase.from('users').select().eq('user_id', userId.trim())
                 .maybeSingle();
             if (error) {
@@ -51,6 +55,7 @@ function Cards() {
                 setProfile(data)
                 console.log(data)
             }
+            setIsLoading(false);
         }
         fetchRecords()
     }, [])
@@ -89,51 +94,69 @@ function Cards() {
     const toBack = (() => {
         navigate(`/`);
     })
+    if (isLoading) {
+        return (
+            <>
+                <Center h="100vh">
+                    <CircularProgress
+                        height="100"
+                        width="100"
+                        color="#b2f3f6"
+                        ariaLabel="circular-progress-loading"
+                        wrapperStyle={{}}
+                        wrapperClass="wrapper-class"
+                        visible={true}
+                        strokeWidth={2}
+                        animationDuration={1}
+                    />
+                </Center >
+            </>
+        )
+    } else {
+        return (
+            <>
+                <Container key={profile.user_id} pt="10">
+                    <Center>
+                        <Card.Root width="320px" >
+                            <Card.Body gap="2">
+                                <Card.Title mt="2">{profile.name}</Card.Title>
+                                <Heading size="lg">自己紹介</Heading>
 
-    return (
-        <>
+                                <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
 
-            <Container key={profile.user_id} pt="10">
-                <Center>
-                    <Card.Root width="320px" >
-                        <Card.Body gap="2">
-                            <Card.Title mt="2">{profile.name}</Card.Title>
-                            <Heading size="lg">自己紹介</Heading>
-
-                            <div dangerouslySetInnerHTML={{ __html: sanitizedHTML }} />
-
-                            <Heading size="lg">好きな技術</Heading>
-                            <Card.Description>
-                                好きなスキル {item.name}
-                            </Card.Description>
-                        </Card.Body>
-                        <Card.Footer justifyContent="flex-end">
-                            <Link to={`https://github.com/${profile.github_id}`} target="_brank">
-                                <IconButton aria-label="Search database">
-                                    <FaGithub />
-                                </IconButton>
-                            </Link>
-                            <Link to={`https://qiita.com/${profile.qiita_id}`} target="_brank">
-                                <IconButton aria-label="Search database">
-                                    <LuNotebookText />
-                                </IconButton>
-                            </Link>
-                            <Link to={`https://x.com/${profile.x_id}`} target="_brank">
-                                <IconButton>
-                                    <FaXTwitter />
-                                </IconButton>
-                            </Link>
-                        </Card.Footer>
-                    </Card.Root>
-                </Center>
-                <Center mt="8">
-                    <Button onClick={toBack} width="300px" bg="teal.500">戻る</Button>
-                </Center>
-            </Container>
+                                <Heading size="lg">好きな技術</Heading>
+                                <Card.Description>
+                                    好きなスキル {item.name}
+                                </Card.Description>
+                            </Card.Body>
+                            <Card.Footer justifyContent="flex-end">
+                                <Link to={`https://github.com/${profile.github_id}`} target="_brank">
+                                    <IconButton aria-label="Search database">
+                                        <FaGithub />
+                                    </IconButton>
+                                </Link>
+                                <Link to={`https://qiita.com/${profile.qiita_id}`} target="_brank">
+                                    <IconButton aria-label="Search database">
+                                        <LuNotebookText />
+                                    </IconButton>
+                                </Link>
+                                <Link to={`https://x.com/${profile.x_id}`} target="_brank">
+                                    <IconButton>
+                                        <FaXTwitter />
+                                    </IconButton>
+                                </Link>
+                            </Card.Footer>
+                        </Card.Root>
+                    </Center>
+                    <Center mt="8">
+                        <Button onClick={toBack} width="300px" bg="teal.500">戻る</Button>
+                    </Center>
+                </Container>
 
 
-        </>
-    )
+            </>
+        )
+    }
 }
 
 export default Cards
