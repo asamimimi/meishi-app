@@ -53,10 +53,11 @@ function Home() {
                         <form onSubmit={handleSubmit}>
                             <Card.Body>
                                 <Stack gap="4" w="full">
-                                    <Field.Root>
+                                    <Field.Root invalid={message !== ''}>
                                         <Field.Label>ID</Field.Label>
                                         <Input name="user_id" value={user_id}
                                             onChange={handleChange} />
+                                        <Field.ErrorText>{message}</Field.ErrorText>
                                     </Field.Root>
 
                                 </Stack>
