@@ -31,6 +31,10 @@ function Register() {
     const [selection, setSelection] = useState<Select[]>([])
     const navigate = useNavigate();
 
+    const toBack = (() => {
+        navigate(`/`);
+    })
+
     // スキルのデータ取得
     useEffect(() => {
         async function fetchRecords() {
@@ -87,11 +91,10 @@ function Register() {
             return;
         }
         console.log('送信された値:', formData);
+        toBack();
     };
 
-    const toBack = (() => {
-        navigate(`/`);
-    })
+
     return (
         <>  <Container pt="6" pb="6">
             <Center>
